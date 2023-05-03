@@ -1,20 +1,19 @@
 #include "lcd1602.h"
 #include <stdarg.h>
+#include <LiquidCrystal_I2C.h>
 
-LCD1602::LCD1602(int _clockPin, int _dataPin) : lcd(LCD_ADDR, 16, 2)
+LCD1602::LCD1602(int _addr) : lcd(_addr, 16, 2)
 {
-    pinMode(_clockPin, OUTPUT);
-    pinMode(_dataPin, OUTPUT);
+    this->addr = _addr;
+    this->lcd.begin();
 }
 
 void LCD1602::setup()
 {
+    this->lcd.clear();
+    this->lcd.backlight();
 }
 
 void LCD1602::loop()
-{
-}
-
-void LCD1602::printf(const char *format, ...)
 {
 }

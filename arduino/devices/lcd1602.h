@@ -6,17 +6,19 @@
 
 #define LCD_ADDR 0x27
 
-class LCD1602 : Device
+class LCD1602 : public Device
 {
 public:
-    LCD1602(int clockPin, int dataPin);
+    /**
+     * Initialize the LCD1602 module.
+     */
+    LCD1602(int addr = LCD_ADDR);
     virtual void setup();
     virtual void loop();
 
-    void printf(const char *format, ...);
-
-private:
+    void printf(int col, int row, const char *format, ...);
     LiquidCrystal_I2C lcd;
+    int addr;
 };
 
 #include "./lcd1602.cpp"
