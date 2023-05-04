@@ -25,6 +25,7 @@
                 "C:\\Users\\pongthai\\Documents\\Arduino\\libraries\\LiquidCrystal_i2c",
                 "C:\\Users\\pongthai\\Documents\\Arduino\\libraries\\PCF8574",
                 "C:\\Users\\pongthai\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\3.1.2\\libraries\\Wire",
+                "C:\\Users\\pongthai\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\3.1.2\\libraries\\ESP8266WiFi\\src",
                 "c:\\users\\pongthai\\appdata\\local\\arduino15\\packages\\esp8266\\tools\\xtensa-lx106-elf-gcc\\3.1.0-gcc10.3-e5f9fec\\xtensa-lx106-elf\\include\\c++\\10.3.0",
                 "c:\\users\\pongthai\\appdata\\local\\arduino15\\packages\\esp8266\\tools\\xtensa-lx106-elf-gcc\\3.1.0-gcc10.3-e5f9fec\\xtensa-lx106-elf\\include\\c++\\10.3.0\\xtensa-lx106-elf",
                 "c:\\users\\pongthai\\appdata\\local\\arduino15\\packages\\esp8266\\tools\\xtensa-lx106-elf-gcc\\3.1.0-gcc10.3-e5f9fec\\xtensa-lx106-elf\\include\\c++\\10.3.0\\backward",
@@ -361,8 +362,7 @@
                 "__ATOMIC_ACQ_REL=4",
                 "__ATOMIC_RELEASE=3",
                 "USBCON"
-            ],
-            "compileCommands": "${workspaceFolder}/dist/compile_commands.json"
+            ]
         }
     ]
 }

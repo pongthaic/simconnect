@@ -3,7 +3,7 @@
 
 #include "./device.h"
 
-class RotaryEncoder : Device
+class RotaryEncoder : public Device
 {
 public:
     RotaryEncoder(int clk, int dt);

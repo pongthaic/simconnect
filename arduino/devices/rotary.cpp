@@ -16,9 +16,8 @@ void ICACHE_RAM_ATTR _rotaryHandler()
         {
             digitalRead(pEnc->dt) != _newclk ? pEnc->value-- : pEnc->value++;
             _encoders[i]->lastClk = _newclk;
+            _encoders[i]->detents++;
         }
-
-        _encoders[i]->detents++;
     }
 }
 

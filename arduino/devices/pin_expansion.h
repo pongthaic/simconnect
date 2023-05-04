@@ -4,7 +4,7 @@
 #include "./device.h"
 #include <PCF8574.h>
 
-class PinExpansion : Device
+class PinExpansion : public Device
 {
 public:
     PinExpansion(int addr = 0x20);
