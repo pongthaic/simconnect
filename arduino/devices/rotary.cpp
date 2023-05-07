@@ -38,4 +38,9 @@ void RotaryEncoder::setup()
 
 void RotaryEncoder::loop()
 {
+    if (this->onValueChanged != NULL && (this->lastValue != this->value))
+    {
+        this->onValueChanged(this->value, this->lastValue);
+        this->lastValue = this->value;
+    }
 }

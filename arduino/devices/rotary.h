@@ -10,11 +10,16 @@ public:
     void setup();
     void loop();
 
+    void (*onValueChanged)(int newVal, int oldVal) = NULL;
+
     volatile int value;
     volatile int clk;
     volatile int dt;
     volatile int lastClk;
     volatile int detents;
+
+private:
+    int lastValue = 0;
 };
 
 #include "./rotary.cpp"
