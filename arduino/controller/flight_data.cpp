@@ -7,6 +7,11 @@ FlightData::FlightData()
     this->inputMode = this->inputData.begin();
 }
 
+bool FlightData::available()
+{
+    return this->displayData.size() > 0 || this->inputData.size() > 0; // TODO: Change to && for production.
+}
+
 String FlightData::nextDisplay()
 {
     this->displayMode++;

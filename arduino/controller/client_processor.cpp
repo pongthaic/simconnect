@@ -32,6 +32,9 @@ void onClientConnected(WiFiClient *client, String request)
                 flightData.inputData[it->first] = it->second;
         }
     }
+
+    // remove after debug
+    flightData.inputMode = flightData.inputData.begin();
 }
 
 String onClientDataRequest(WiFiClient *client)

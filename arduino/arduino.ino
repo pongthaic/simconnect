@@ -7,9 +7,13 @@
 #include "devices_container.h"
 
 #include "controller/client_processor.h"
+#include "controller/flight_controller.h"
+#include "controller/flight_data.h"
 
 #include <stdlib.h>
 #include <Arduino.h>
+
+#define EXPN_KNOB_PIN 1
 
 LCD1602 lcd;
 PinExpansion expn;
@@ -18,8 +22,6 @@ RotaryEncoder knob2(14, 2);
 Oled oled(0x3C, 128, 64);
 DeviceContainer devices;
 WebServer websvr("udomsuk_downstairs_24", "chandpoung");
-int lastValue = 0;
-int lastValue2 = 0;
 
 void setup()
 {
@@ -27,6 +29,9 @@ void setup()
     websvr.onConnected = onWebServerConnected;
     websvr.onClientConnected = onClientConnected;
     websvr.onClientDataRequest = onClientDataRequest;
+
+    knob1.onValueChanged = onKnob1Changed;
+    knob2.onValueChanged = onKnob2Changed;
 
     devices.addDevice(lcd);
     devices.addDevice(expn);
@@ -38,6 +43,7 @@ void setup()
     Serial.begin(115200);
     devices.setup();
     expn.pcf.write(0, HIGH);
+    expn.pcf.setButtonMask(0xFF); // PIN 01 is a button (output pin)
 
     oled.setYellowText("Connecting");
     oled.getOled().display();
@@ -45,17 +51,18 @@ void setup()
 
 void loop()
 {
+    static unsigned long last = millis();
+
     devices.loop();
-
-    if (knob1.value != lastValue || knob2.value != lastValue2)
-    {
-        lcd.lcd.setCursor(0, 1);
-        lcd.lcd.printf("V1: %3d, V2: %3d", knob1.value, knob2.value);
-        lastValue = knob1.value;
-        lastValue2 = knob2.value;
-    }
-
+    _updateLCDDisplay();
     _updateOLEDDisplay();
+
+    if (millis() - last > 1000)
+    {
+        uint8_t current = expn.pcf.read(0);
+        expn.pcf.write(0, !current);
+        last = millis();
+    }
 }
 
 void onWebServerConnecting()
@@ -77,6 +84,34 @@ void onWebServerConnected(String ip)
 {
     lcd.lcd.clear();
     lcd.lcd.printf("IP: %s", ip);
+}
+
+void onKnob1Changed(int newval, int oldval)
+{
+    uint8_t unpressed = expn.pcf.read(EXPN_KNOB_PIN); // for rotary, unpressed = 1, pressed = 0
+    flightController.rotateKnob(newval - oldval, unpressed);
+}
+
+void onKnob2Changed(int newval, int oldval)
+{
+}
+
+void _updateLCDDisplay()
+{
+    static String currentValue = "";
+    static String currentTitle = "";
+
+    if (flightData.available() && (currentTitle != flightData.inputTitle() || currentValue != flightData.inputValue()))
+    {
+        lcd.lcd.clear();
+        lcd.lcd.setCursor(0, 0);
+        lcd.lcd.print(flightData.inputTitle());
+
+        lcd.lcd.setCursor(0, 1);
+        lcd.lcd.print(flightData.inputValue());
+        currentTitle = flightData.inputTitle();
+        currentValue = flightData.inputValue();
+    }
 }
 
 void _updateOLEDDisplay()

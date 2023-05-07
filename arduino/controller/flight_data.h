@@ -17,6 +17,9 @@ class FlightData
 {
 public:
     FlightData();
+
+    bool available();
+
     String nextDisplay();
     String nextInput();
 
