@@ -6,6 +6,8 @@
 #include "devices/oled.h"
 #include "devices_container.h"
 
+#include "controller/client_processor.h"
+
 #include <stdlib.h>
 #include <Arduino.h>
 
@@ -23,6 +25,8 @@ void setup()
 {
     websvr.onConnecting = onWebServerConnecting;
     websvr.onConnected = onWebServerConnected;
+    websvr.onClientConnected = onClientConnected;
+    websvr.onClientDataRequest = onClientDataRequest;
 
     devices.addDevice(lcd);
     devices.addDevice(expn);
@@ -49,9 +53,9 @@ void loop()
         lcd.lcd.printf("V1: %3d, V2: %3d", knob1.value, knob2.value);
         lastValue = knob1.value;
         lastValue2 = knob2.value;
-
-        _updateOLEDDisplay();
     }
+
+    _updateOLEDDisplay();
 }
 
 void onWebServerConnecting()
@@ -77,16 +81,13 @@ void onWebServerConnected(String ip)
 
 void _updateOLEDDisplay()
 {
-    oled.getOled().clearDisplay();
-    oled.setYellowText("VOR1");
-    oled.setBlueText(String(knob1.value));
+    static unsigned long lastRefresh = millis();
 
-    /*
-    oled.getOled().setCursor(0, 33);
-    oled.getOled().setTextColor(INVERSE);
-    oled.getOled().printf("%4d", knob1.value);
-    */
-    oled.getOled().display();
+    if (millis() - lastRefresh > 100)
+    {
+        oled.setScreenText(String(knob1.value), "VOR1");
+        lastRefresh = millis();
+    }
 }
 
 void _serialScan()

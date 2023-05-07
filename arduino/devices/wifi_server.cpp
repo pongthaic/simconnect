@@ -22,6 +22,7 @@ void WebServer::setup()
 
     // Initialize Server
     this->svr = new WiFiServer(this->port);
+    this->svr->begin();
 }
 
 void WebServer::loop()
@@ -35,7 +36,7 @@ void WebServer::loop()
             this->onClientConnected(&client, request);
         }
 
-        String data = this->onClientDataRequest != NULL ? this->onClientDataRequest(&client) : "{}";
+        String data = this->onClientDataRequest != NULL ? this->onClientDataRequest(&client) : "";
         client.write("HTTP/1.1 200 OK\r\n");
         client.write("Content-Type: application/json\r\n");
         client.write("\r\n");

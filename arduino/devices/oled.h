@@ -19,6 +19,7 @@ public:
     // Utility draw for Yellow-Blue 128 x 64 display
     void setBlueText(String text);
     void setYellowText(String text, bool inverse = false);
+    void setScreenText(String mainText, String titleText);
 
 private:
     int addr;

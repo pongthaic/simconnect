@@ -7,7 +7,6 @@
 
 Oled::Oled(int addr, int w, int h) : addr(addr), oled(w, h, &Wire, -1)
 {
-    this->oled.setFont(&FreeMono18pt7b);
 }
 
 void Oled::setup()
@@ -43,6 +42,14 @@ void Oled::setYellowText(String text, bool inverse)
     this->oled.setTextColor(WHITE);
     this->oled.setFont(&FreeMono9pt7b);
     this->oled.print(text.c_str());
+}
+
+void Oled::setScreenText(String mainText, String titleText)
+{
+    this->oled.clearDisplay();
+    this->setYellowText(titleText);
+    this->setBlueText(mainText);
+    this->oled.display();
 }
 
 /*
