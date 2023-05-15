@@ -36,6 +36,9 @@ public:
 
     DataEntry::iterator displayMode;
     DataEntry::iterator inputMode;
+
+    bool operator==(FlightData &other);
+    bool operator!=(FlightData &other);
 };
 
 /** singleton global */

@@ -7,7 +7,8 @@
 class WebServer : public Device
 {
 public:
-    WebServer(const char *ssid, const char *password, int port = 80);
+    WebServer(String ssid, String password, int port = 80);
+    virtual ~WebServer();
     virtual void setup();
     virtual void loop();
 
@@ -18,9 +19,9 @@ public:
     void (*onClientConnected)(WiFiClient *client, String request) = NULL;
     String (*onClientDataRequest)(WiFiClient *client) = NULL;
 
-private:
-    const char *ssid;
-    const char *password;
+protected:
+    String ssid;
+    String password;
     const int port;
     WiFiServer *svr;
 };

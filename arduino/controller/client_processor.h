@@ -5,6 +5,7 @@
 
 void onClientConnected(WiFiClient *client, String request);
 String onClientDataRequest(WiFiClient *client);
+void onClientDataReceived(WiFiClient *client, String data);
 
 #include "client_processor.cpp"
 

@@ -10,6 +10,7 @@ typedef std::map<String, String> PayloadData;
 #define DISPLAY_DATA 0
 #define INPUT_DATA 1
 
+// OBSOLETED
 void onClientConnected(WiFiClient *client, String request)
 {
     Serial.println("Client Connected.");
@@ -35,6 +36,31 @@ void onClientConnected(WiFiClient *client, String request)
 
     // remove after debug
     flightData.inputMode = flightData.inputData.begin();
+}
+
+void onClientDataReceived(WiFiClient *client, String data)
+{
+    int eq = data.indexOf('=');
+
+    if (eq >= 0)
+    {
+        // data mode
+        String key = data.substring(0, data.indexOf('='));
+        String val = data.substring(data.indexOf('=') + 1);
+
+        Serial.printf("%s is %s\n", key, val);
+        flightData.displayData[key] = val;
+    }
+    else
+    {
+        // Command mode
+        data.trim();
+        if (data == "GET")
+        {
+            client->println(flightData.toString());
+            client->flush();
+        }
+    }
 }
 
 String onClientDataRequest(WiFiClient *client)

@@ -20,9 +20,9 @@ This is for ESP8266
 - 3V3
 - G
 - D5
-- D6 - Rotary Encoder 1 DT
-- D7 - Rotary Encoder 1 CLK
-- D8
+- D6 
+- D7 - Rotary Encoder 1 DT
+- D8 - Rotary Encoder 1 CLK
 - RX
 - TX
 - GND - Supplies to PCF8574
@@ -43,6 +43,17 @@ This is for ESP8266
 - RST
 - G
 - Vin
+
+
+The PCF Pins
+0 - Output LED
+1 - Display Mode Switcher
+2 - Input Mode Switcher
+3 - Rotary 1 SW
+4 - SW4
+5 - SW3
+6 - SW2
+7 - SW1
 
 ## Functions
 

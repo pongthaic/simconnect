@@ -36,8 +36,6 @@ void FlightController::rotateKnob(int detents, int pushState)
 
         flightData.inputData[target] = String(newstr);
         free(newstr);
-
-        Serial.println(flightData.inputData[target]);
     }
 }
 
@@ -45,6 +43,15 @@ void FlightController::rotateTrim(int detents)
 {
 }
 
+enum ButtonNo
+{
+    BUTTON_NEXT_DISPLAY = 7
+};
+
 void FlightController::pressButton(int buttonNo)
 {
+    if (buttonNo == BUTTON_NEXT_DISPLAY)
+    {
+        flightData.nextDisplay();
+    }
 }

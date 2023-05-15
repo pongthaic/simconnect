@@ -7,6 +7,31 @@ FlightData::FlightData()
     this->inputMode = this->inputData.begin();
 }
 
+bool FlightData::operator==(FlightData &other)
+{
+    if (this == &other)
+        return true;
+
+    for (DataEntry::iterator it = this->inputData.begin(); it != this->inputData.end(); it++)
+    {
+        if (it->second != other.inputData[it->first])
+            return false;
+    }
+
+    for (DataEntry::iterator it = this->displayData.begin(); it != this->displayData.end(); it++)
+    {
+        if (it->second != other.displayData[it->first])
+            return false;
+    }
+
+    return true;
+}
+
+bool FlightData::operator!=(FlightData &other)
+{
+    return !(other == *this);
+}
+
 bool FlightData::available()
 {
     return this->displayData.size() > 0 || this->inputData.size() > 0; // TODO: Change to && for production.
@@ -14,10 +39,14 @@ bool FlightData::available()
 
 String FlightData::nextDisplay()
 {
-    this->displayMode++;
-    if (this->displayMode == this->displayData.end())
-        this->displayMode = this->displayData.begin();
-    return this->displayMode->first;
+    if (this->displayData.size() > 0)
+    {
+        this->displayMode++;
+        if (this->displayMode == this->displayData.end())
+            this->displayMode = this->displayData.begin();
+        return this->displayMode->first;
+    }
+    return "Empty";
 }
 
 String FlightData::nextInput()

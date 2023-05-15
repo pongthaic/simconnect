@@ -6,11 +6,13 @@
 
 enum PinState
 {
-    PIN_KEPT_LOW,
-    PIN_KEPT_HIGH,
-    PIN_RISING,
-    PIN_FALLING,
+    PIN_KEPT_LOW = 0x00,
+    PIN_KEPT_HIGH = 0x01,
+    PIN_RISING = 0x02,
+    PIN_FALLING = 0x04,
 };
+
+typedef void (*PinUpdateListener)(enum PinState);
 
 class PinExpansion : public Device
 {
@@ -22,12 +24,14 @@ public:
     int getData(int pin);
 
     void (*onUpdated)(enum PinState pins[]) = NULL;
+    void setInputListener(int pin, PinUpdateListener listener);
 
     PCF8574 pcf;
     int addr;
 
 private:
     uint8_t last = 0;
+    PinUpdateListener *listeners;
 };
 
 #include "./pin_expansion.cpp"

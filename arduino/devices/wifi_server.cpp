@@ -1,6 +1,7 @@
 #include <ESP8266WiFi.h>
+#include "wifi_server.h"
 
-WebServer::WebServer(const char *ssid, const char *password, int port) : port(port)
+WebServer::WebServer(String ssid, String password, int port) : port(port)
 {
     WiFi.mode(WIFI_STA);
     this->ssid = ssid;
@@ -49,4 +50,8 @@ void WebServer::loop()
 bool WebServer::isConnected()
 {
     return WiFi.status() == WL_CONNECTED;
+}
+
+WebServer::~WebServer()
+{
 }
