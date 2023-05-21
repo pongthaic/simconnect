@@ -21,10 +21,14 @@ void FlightController::rotateKnob(int detents, int pushState)
         current.remove(3, 1); // remove dot
         int value = current.toInt();
 
+        /*
         if (pushState != 0)
             value += detents * 100;
         else
             value += detents * 5;
+        */
+
+        value += detents * 5;
 
         if (value > 11795)
             value = 10800;
@@ -45,12 +49,18 @@ void FlightController::rotateTrim(int detents)
 
 enum ButtonNo
 {
-    BUTTON_NEXT_DISPLAY = 7
+    BUTTON_NEXT_INPUT = 1,
+    BUTTON_NEXT_DISPLAY = 2,
+    BUTTON_PRECISION_INPUT = 7,
 };
 
 void FlightController::pressButton(int buttonNo)
 {
-    if (buttonNo == BUTTON_NEXT_DISPLAY)
+    if (buttonNo == BUTTON_NEXT_INPUT)
+    {
+        flightData.nextInput();
+    }
+    else if (buttonNo == BUTTON_NEXT_DISPLAY)
     {
         flightData.nextDisplay();
     }

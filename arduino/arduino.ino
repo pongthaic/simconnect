@@ -47,6 +47,8 @@ void setup()
     knob2.onValueChanged = onKnob2Changed;
 
     expn.setInputListener(7, onUpdatedPinState);
+    expn.setInputListener(1, onNextInput);
+    expn.setInputListener(2, onNextInput);
 
     devices.addDevice(lcd);
     devices.addDevice(expn);
@@ -56,7 +58,7 @@ void setup()
     devices.addDevice(oled);
     devices.addDevice(presenter);
 
-    Serial.begin(115200);
+    Serial.begin(9600);
     devices.setup();
     expn.pcf.write(0, HIGH);
     expn.pcf.setButtonMask(0xFF); // PIN 01 is a button (output pin)
@@ -107,5 +109,14 @@ void onUpdatedPinState(enum PinState state)
     if (state == PIN_RISING)
     {
         flightController.pressButton(7);
+    }
+}
+
+void onNextInput(enum PinState state)
+{
+    Serial.printf("Next input, %d\n", state);
+    if (state == PIN_RISING)
+    {
+        flightController.pressButton(1);
     }
 }

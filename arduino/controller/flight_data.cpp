@@ -34,19 +34,22 @@ bool FlightData::operator!=(FlightData &other)
 
 bool FlightData::available()
 {
-    return this->displayData.size() > 0 || this->inputData.size() > 0; // TODO: Change to && for production.
+    return !this->inputData.empty() || !this->displayData.empty();
 }
 
 String FlightData::nextDisplay()
 {
-    if (this->displayData.size() > 0)
+    if (!this->displayData.empty())
     {
         this->displayMode++;
         if (this->displayMode == this->displayData.end())
             this->displayMode = this->displayData.begin();
         return this->displayMode->first;
     }
-    return "Empty";
+    else
+    {
+        return "Empty";
+    }
 }
 
 String FlightData::nextInput()

@@ -5,6 +5,8 @@
 #include <Fonts/FreeMono12pt7b.h>
 #include <Fonts/FreeMono18pt7b.h>
 
+#define OLED_UPDATE_INTERVAL 1000
+
 Oled::Oled(int addr, int w, int h) : addr(addr), oled(w, h, &Wire, -1)
 {
 }
@@ -19,11 +21,25 @@ void Oled::setup()
     {
         Serial.println("OLED Setup succeeded.");
         this->oled.clearDisplay();
+        this->oled.print("ready.");
+        this->oled.display();
     }
 }
 
 void Oled::loop()
 {
+    unsigned long last = millis();
+    if (millis() - last > OLED_UPDATE_INTERVAL)
+    {
+        this->paint(this->oled);
+    }
+}
+
+void Oled::paint(Adafruit_SSD1306 &oled)
+{
+    oled.clearDisplay();
+    oled.print("Ready!");
+    oled.display();
 }
 
 void Oled::setBlueText(String text)

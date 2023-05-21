@@ -21,6 +21,9 @@ public:
     void setYellowText(String text, bool inverse = false);
     void setScreenText(String mainText, String titleText);
 
+protected:
+    void paint(Adafruit_SSD1306 &oled);
+
 private:
     int addr;
     Adafruit_SSD1306 oled;

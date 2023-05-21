@@ -1,9 +1,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-#include "util.h"
-
-void _serialScan()
+void serialScan()
 {
     byte error, address;
     int nDevices;

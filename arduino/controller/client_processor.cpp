@@ -10,6 +10,51 @@ typedef std::map<String, String> PayloadData;
 #define DISPLAY_DATA 0
 #define INPUT_DATA 1
 
+/**
+ * The Protocol
+ *
+ * Command
+ * -------
+ * <command> [<arg1>] [<arg2>] ...\n
+ *
+ *
+
+ * List of Commands
+ * ----------------
+ *
+ * Client --> Server
+ * D   Update DISPLAY values
+ * e.g. D DME 110
+ *
+ * I   Update INPUT values
+ * e.g. I VOR1 117.70
+ *
+ * N  Update Non-Displayable Inputs
+ * N  LANDING_GEAR 0
+ *
+ * G
+ * Get the current stored values
+ * Result:
+ * D <key> <value>\n
+ * I <key> <value>\n
+ * N <key> <value>\n
+ * ...
+ * \n
+ *
+ *
+ * Server --> Client
+ *
+ * D <key> <value>\n
+ * I <key> <value>\n
+ * N <key> <value>\n
+ *
+ * G
+ * Get the current state of flight
+ *
+ *
+ *
+ *
+*/
 // OBSOLETED
 void onClientConnected(WiFiClient *client, String request)
 {
@@ -33,9 +78,6 @@ void onClientConnected(WiFiClient *client, String request)
                 flightData.inputData[it->first] = it->second;
         }
     }
-
-    // remove after debug
-    flightData.inputMode = flightData.inputData.begin();
 }
 
 void onClientDataReceived(WiFiClient *client, String data)
@@ -49,7 +91,7 @@ void onClientDataReceived(WiFiClient *client, String data)
         String val = data.substring(data.indexOf('=') + 1);
 
         Serial.printf("%s is %s\n", key, val);
-        flightData.displayData[key] = val;
+        flightData.inputData[key] = val;
     }
     else
     {

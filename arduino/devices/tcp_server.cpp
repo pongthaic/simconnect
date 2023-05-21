@@ -33,7 +33,7 @@ void TCPServer::loop()
         if (client.available())
         {
             String received = client.readStringUntil('\n');
-            Serial.printf("received '%s' from client %s\n", received, client.remoteIP().toString());
+            Serial.printf("received '%s' from client %s\n", received.c_str(), client.remoteIP().toString());
 
             if (received == "$close\n")
             {
@@ -50,5 +50,17 @@ void TCPServer::loop()
                 }
             }
         }
+    }
+}
+
+void TCPServer::send(String data)
+{
+    auto it = this->clients.begin();
+    while (it != this->clients.end())
+    {
+        it->write(data.c_str());
+        it->write("\n");
+        it->flush();
+        it++;
     }
 }

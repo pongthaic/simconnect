@@ -13,6 +13,8 @@ public:
     virtual ~TCPServer();
     virtual void loop();
 
+    void send(String data);
+
     void (*onReceived)(WiFiClient *client, String data) = NULL;
 
 private:
