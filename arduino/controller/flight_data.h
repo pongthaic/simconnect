@@ -4,7 +4,36 @@
 #include <map>
 #include <vector>
 
-typedef std::map<String, String> DataEntry;
+typedef enum DataEntryRoleEnum
+{
+    DATAENTRY_ROLE_DISPLAY,
+    DATAENTRY_ROLE_INPUT,
+    DATAENTRY_ROLE_NONDISPLAY,
+
+    DATAENTRY_ROLE_MAX,
+} DataEntryRole;
+
+typedef enum DataEntryTypeEnum
+{
+    DATAENTRY_TYPE_FREQ_VOR,
+    DATAENTRY_TYPE_FREQ_COM,
+    DATAENTRY_TYPE_FREQ_NDB,
+    DATAENTRY_TYPE_UINT_DME,
+    DATAENTRY_TYPE_UINT_ALT,
+    DATAENTRY_TYPE_UINT_SPD,
+    DATAENTRY_TYPE_INT_VSPD,
+    DATAENTRY_TYPE_UINT_HDG, // and course
+    DATAENTRY_TYPE_INT_TRIM,
+} DataEntryType;
+
+typedef struct DataEntryStruct
+{
+    String value;
+    DataEntryRole role;
+    DataEntryType type;
+} DataEntry;
+
+typedef std::map<String, DataEntry> DataBase;
 
 /**
  * Model class that represents the current state of an active flight.
@@ -20,25 +49,22 @@ public:
 
     bool available();
 
-    String nextDisplay();
-    String nextInput();
+    /** Call upon initialization of client connectivity */
+    void setupEntry(String label, String initialValue, DataEntryRole role, DataEntryType type);
 
-    String displayTitle();
-    String displayValue();
+    String currentLabel(DataEntryRole role);
 
-    String inputTitle();
-    String inputValue();
+    String currentValue(DataEntryRole role);
+
+    DataEntry &currentEntry(DataEntryRole role);
+
+    void next(DataEntryRole role);
 
     String toString();
 
-    DataEntry displayData;
-    DataEntry inputData;
-
-    DataEntry::iterator displayMode;
-    DataEntry::iterator inputMode;
-
-    bool operator==(FlightData &other);
-    bool operator!=(FlightData &other);
+protected:
+    DataBase _db[3];
+    DataBase::iterator _dbit[3];
 };
 
 /** singleton global */

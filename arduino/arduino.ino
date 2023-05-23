@@ -30,7 +30,7 @@
 LCD1602 lcd;
 PinExpansion expn;
 RotaryEncoder knob1(15, 13);
-RotaryEncoder knob2(14, 2);
+RotaryEncoder knob2(0, 2);
 Oled oled(0x3C, 128, 64);
 DeviceContainer devices;
 TCPServer server("udomsuk_downstairs_24", "chandpoung");

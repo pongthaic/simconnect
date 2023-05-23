@@ -3,103 +3,72 @@
 
 FlightData::FlightData()
 {
-    this->displayMode = this->displayData.begin();
-    this->inputMode = this->inputData.begin();
+    for (int role = 0; role < DATAENTRY_ROLE_MAX; role++)
+    {
+        this->_dbit[role] = this->_db[role].begin();
+    }
 }
 
-bool FlightData::operator==(FlightData &other)
+void FlightData::setupEntry(String label, String initialValue, DataEntryRole role, DataEntryType type)
 {
-    if (this == &other)
-        return true;
+    DataEntry ent;
+    ent.role = role;
+    ent.type = type;
+    ent.value = initialValue;
 
-    for (DataEntry::iterator it = this->inputData.begin(); it != this->inputData.end(); it++)
-    {
-        if (it->second != other.inputData[it->first])
-            return false;
-    }
-
-    for (DataEntry::iterator it = this->displayData.begin(); it != this->displayData.end(); it++)
-    {
-        if (it->second != other.displayData[it->first])
-            return false;
-    }
-
-    return true;
+    this->_db[role][label] = ent;
 }
 
-bool FlightData::operator!=(FlightData &other)
+String FlightData::currentLabel(DataEntryRole role)
 {
-    return !(other == *this);
+    if (this->_dbit[role] == this->_db[role].end())
+        return "-";
+
+    return this->_dbit[role]->first;
+}
+
+String FlightData::currentValue(DataEntryRole role)
+{
+    if (this->_dbit[role] == this->_db[role].end())
+        return "-";
+    return this->_dbit[role]->second.value;
+}
+
+DataEntry &FlightData::currentEntry(DataEntryRole role)
+{
+    return this->_dbit[role]->second;
+}
+
+void FlightData::next(DataEntryRole role)
+{
+    this->_dbit[role]++;
+    if (this->_dbit[role] == this->_db[role].end())
+        this->_dbit[role] = this->_db[role].begin();
 }
 
 bool FlightData::available()
 {
-    return !this->inputData.empty() || !this->displayData.empty();
-}
-
-String FlightData::nextDisplay()
-{
-    if (!this->displayData.empty())
+    for (int role = 0; role < DATAENTRY_ROLE_MAX; role++)
     {
-        this->displayMode++;
-        if (this->displayMode == this->displayData.end())
-            this->displayMode = this->displayData.begin();
-        return this->displayMode->first;
+        if (this->_db[role].begin() == this->_db[role].end())
+            return false;
     }
-    else
-    {
-        return "Empty";
-    }
-}
-
-String FlightData::nextInput()
-{
-    this->inputMode++;
-    if (this->inputMode == this->inputData.end())
-        this->inputMode = this->inputData.begin();
-    return this->inputMode->first;
+    return true;
 }
 
 String FlightData::toString()
 {
     String result("");
-    DataEntry::iterator it1 = this->displayData.begin();
-    for (; it1 != this->displayData.end(); it1++)
+    for (int role = 0; role < DATAENTRY_ROLE_MAX; role++)
     {
-        result += it1->first;
-        result += "=";
-        result += it1->second;
-        result += "\n";
-    }
-
-    DataEntry::iterator it2 = this->inputData.begin();
-    for (; it2 != this->inputData.end(); it2++)
-    {
-        result += it2->first;
-        result += "=";
-        result += it2->second;
-        result += "\n";
+        for (auto it1 = this->_db[role].begin(); it1 != this->_db[role].end(); it1++)
+        {
+            result += it1->first;
+            result += "=";
+            result += it1->second;
+            result += "\n";
+        }
     }
 
     return result;
-}
-
-String FlightData::displayTitle()
-{
-    return this->displayMode->first;
-}
-
-String FlightData::displayValue()
-{
-    return this->displayMode->second;
-}
-
-String FlightData::inputTitle()
-{
-    return this->inputMode->first;
-}
-
-String FlightData::inputValue()
-{
-    return this->inputMode->second;
 }

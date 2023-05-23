@@ -17,12 +17,8 @@ let vor1 = 117.70
 let vor2 = 118.80
 
 function update(sock) {
-    sock.write(`VOR1=${(vor1).toFixed(2)}\n`)
-    sock.write(`VOR2=${(vor2).toFixed(2)}\n`)
-    
-    vor1 += 0.10
-    vor2 += 0.20
-
+    sock.write(`I VOR1 ${(vor1).toFixed(2)}\n`)
+    sock.write(`I VOR2 ${(vor2).toFixed(2)}\n`)
     console.log(`updated vor1 = ${(vor1).toFixed(2)} vor2 = ${(vor2).toFixed(2)}`)
 }
 

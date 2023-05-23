@@ -1,5 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <malloc.h>
+#include <vector>
 #include <map>
 
 #include "parser.h"
@@ -21,7 +22,6 @@ typedef std::map<String, String> PayloadData;
 
  * List of Commands
  * ----------------
- *
  * Client --> Server
  * D   Update DISPLAY values
  * e.g. D DME 110
@@ -55,33 +55,25 @@ typedef std::map<String, String> PayloadData;
  *
  *
 */
-// OBSOLETED
-void onClientConnected(WiFiClient *client, String request)
-{
-    Serial.println("Client Connected.");
-    PayloadData data = parseRequest(request);
-    PayloadData::iterator it = data.begin();
-    int mode = DISPLAY_DATA;
-
-    if (data["_PATH"] == "display")
-        mode = DISPLAY_DATA;
-    else
-        mode = INPUT_DATA;
-
-    for (; it != data.end(); it++)
-    {
-        if (it->first != "_PATH")
-        {
-            if (mode == DISPLAY_DATA)
-                flightData.displayData[it->first] = it->second;
-            else
-                flightData.inputData[it->first] = it->second;
-        }
-    }
-}
-
 void onClientDataReceived(WiFiClient *client, String data)
 {
+    auto args = _split(data, " ");
+
+    if (args[0] == "D")
+    {
+        flightData.displayData[args[1]] = args[2];
+    }
+    else if (args[0] == "I")
+    {
+        flightData.inputData[args[1]] = args[2];
+    }
+    else if (args[0] == "N")
+    {
+        flightData.nonDisplayData[args[1]] = args[2];
+    }
+
+    /*
+
     int eq = data.indexOf('=');
 
     if (eq >= 0)
@@ -103,9 +95,27 @@ void onClientDataReceived(WiFiClient *client, String data)
             client->flush();
         }
     }
+    */
 }
 
 String onClientDataRequest(WiFiClient *client)
 {
     return flightData.toString();
+}
+
+std::vector<String> _split(String &data, String delim = " ")
+{
+    std::vector<String> args;
+
+    uint spc = data.indexOf(delim);
+    uint i = 0;
+
+    while (spc >= 0)
+    {
+        args.push_back(data.substring(i, spc));
+        i += spc + 1;
+        spc = data.indexOf(delim, i);
+    }
+
+    return args;
 }
