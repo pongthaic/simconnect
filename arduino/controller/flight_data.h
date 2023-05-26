@@ -56,6 +56,12 @@ public:
 
     String currentValue(DataEntryRole role);
 
+    /** set value of the current key */
+    void setValue(DataEntryRole role, String value);
+
+    /** set value of the given key */
+    void setValue(DataEntryRole role, String value, String key);
+
     DataEntry &currentEntry(DataEntryRole role);
 
     void next(DataEntryRole role);

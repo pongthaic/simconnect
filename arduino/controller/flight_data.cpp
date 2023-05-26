@@ -34,6 +34,22 @@ String FlightData::currentValue(DataEntryRole role)
     return this->_dbit[role]->second.value;
 }
 
+void FlightData::setValue(DataEntryRole role, String value)
+{
+    this->_dbit[role]->second.value = value;
+}
+
+void FlightData::setValue(DataEntryRole role, String value, String key)
+{
+    if (this->_db[role].find(key) == this->_db[role].end())
+    {
+        Serial.printf("error: no %s setup for role %d.\n", key, role);
+        return;
+    }
+
+    this->_db[role][key].value = value;
+}
+
 DataEntry &FlightData::currentEntry(DataEntryRole role)
 {
     return this->_dbit[role]->second;

@@ -8,9 +8,6 @@
 
 typedef std::map<String, String> PayloadData;
 
-#define DISPLAY_DATA 0
-#define INPUT_DATA 1
-
 /**
  * The Protocol
  *
@@ -55,48 +52,38 @@ typedef std::map<String, String> PayloadData;
  *
  *
 */
+
+#define _COMMAND(cmd, n_args) else if (args.size() > n_args && args[0] == cmd)
+
 void onClientDataReceived(WiFiClient *client, String data)
 {
     auto args = _split(data, " ");
 
-    if (args[0] == "D")
+    if (args.size() == 0)
     {
-        flightData.displayData[args[1]] = args[2];
-    }
-    else if (args[0] == "I")
-    {
-        flightData.inputData[args[1]] = args[2];
-    }
-    else if (args[0] == "N")
-    {
-        flightData.nonDisplayData[args[1]] = args[2];
+        // empty command - valid no-op.
+        return;
     }
 
-    /*
+    _COMMAND("S", 4)
+    flightData.setupEntry(args[1], args[2], _stringToRole(args[3]), _stringToType(args[4]));
 
-    int eq = data.indexOf('=');
+    _COMMAND("D", 2)
+    flightData.setValue(DATAENTRY_ROLE_DISPLAY, args[1], args[2]);
 
-    if (eq >= 0)
-    {
-        // data mode
-        String key = data.substring(0, data.indexOf('='));
-        String val = data.substring(data.indexOf('=') + 1);
+    _COMMAND("I", 2)
+    flightData.setValue(DATAENTRY_ROLE_INPUT, args[1], args[2]);
 
-        Serial.printf("%s is %s\n", key, val);
-        flightData.inputData[key] = val;
-    }
+    _COMMAND("N", 2)
+    flightData.setValue(DATAENTRY_ROLE_NONDISPLAY, args[1], args[2]);
+
     else
     {
-        // Command mode
-        data.trim();
-        if (data == "GET")
-        {
-            client->println(flightData.toString());
-            client->flush();
-        }
+        Serial.printf("invalid command %s with %d arguments.\n", args[0], args.size());
     }
-    */
 }
+
+#undef _COMMAND
 
 String onClientDataRequest(WiFiClient *client)
 {
@@ -118,4 +105,40 @@ std::vector<String> _split(String &data, String delim = " ")
     }
 
     return args;
+}
+
+DataEntryRole _stringToRole(String input)
+{
+    if (input == "DISPLAY")
+        return DATAENTRY_ROLE_DISPLAY;
+    else if (input == "INPUT")
+        return DATAENTRY_ROLE_INPUT;
+    else if (input == "NONDISPLAY")
+        return DATAENTRY_ROLE_NONDISPLAY;
+
+    return DATAENTRY_ROLE_DISPLAY;
+}
+
+DataEntryType _stringToType(String input)
+{
+    if (input == "VOR")
+        return DATAENTRY_TYPE_FREQ_VOR;
+    else if (input == "COM")
+        return DATAENTRY_TYPE_FREQ_COM;
+    else if (input == "NDB")
+        return DATAENTRY_TYPE_FREQ_NDB;
+    else if (input == "DME")
+        return DATAENTRY_TYPE_UINT_DME;
+    else if (input == "ALT")
+        return DATAENTRY_TYPE_UINT_ALT;
+    else if (input == "SPD")
+        return DATAENTRY_TYPE_UINT_SPD;
+    else if (input == "VSPD")
+        return DATAENTRY_TYPE_INT_VSPD;
+    else if (input == "HDG")
+        return DATAENTRY_TYPE_UINT_HDG;
+    else if (input == "TRIM")
+        return DATAENTRY_TYPE_INT_TRIM;
+
+    return DATAENTRY_TYPE_FREQ_VOR;
 }
